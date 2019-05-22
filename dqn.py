@@ -1,3 +1,5 @@
+# coding:utf-8
+
 import os
 import gym
 import random
@@ -7,7 +9,7 @@ from collections import deque
 from skimage.color import rgb2gray
 from skimage.transform import resize
 from keras.models import Sequential
-from keras.layers import Conv2D, Flatten, Dense
+from keras.layers import Convolution2D, Flatten, Dense
 
 ENV_NAME = 'Breakout-v0'  # Environment name
 FRAME_WIDTH = 84  # Resized frame width
@@ -85,9 +87,9 @@ class Agent():
 
     def build_network(self):
         model = Sequential()
-        model.add(Conv2D(32, (8, 8), strides=(4, 4), activation='relu', input_shape=(STATE_LENGTH, FRAME_WIDTH, FRAME_HEIGHT)))
-        model.add(Conv2D(64, (4, 4), strides=(2, 2), activation='relu'))
-        model.add(Con2D(64, (3, 3), strides=(1, 1), activation='relu'))
+        model.add(Convolution2D(32, 8, 8, subsample=(4, 4), activation='relu', input_shape=(STATE_LENGTH, FRAME_WIDTH, FRAME_HEIGHT)))
+        model.add(Convolution2D(64, 4, 4, subsample=(2, 2), activation='relu'))
+        model.add(Convolution2D(64, 3, 3, subsample=(1, 1), activation='relu'))
         model.add(Flatten())
         model.add(Dense(512, activation='relu'))
         model.add(Dense(self.num_actions))

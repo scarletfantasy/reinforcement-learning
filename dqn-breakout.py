@@ -18,7 +18,7 @@ class DQNAgent:
         self.gamma = 0.95    # discount rate
         self.epsilon = 1.0  # exploration rate
         self.epsilon_min = 0.01
-        self.epsilon_decay = 0.995
+        self.epsilon_decay = 0.998
         self.learning_rate = 0.001
         self.model = self._build_model()
 
@@ -72,11 +72,12 @@ if __name__ == "__main__":
     agent = DQNAgent(state_size, action_size)
     # agent.load("./save/cartpole-dqn.h5")
     done = False
-    batch_size = 32
+    batch_size = 128
 
     for e in range(EPISODES):
         state = env.reset()
         state = state[None,:,:,:]
+        totalreward=0
         for time in range(500):
             env.render()
             action = agent.act(state)
@@ -85,10 +86,11 @@ if __name__ == "__main__":
             next_state = next_state[None,:,:,:]
             agent.remember(state, action, reward, next_state, done)
 
+            totalreward+=reward
             state = next_state
             if done:
                 print("episode: {}/{}, score: {}, e: {:.2}"
-                      .format(e, EPISODES, time, agent.epsilon))
+                      .format(e, EPISODES, totalreward, agent.epsilon))
                 break
             if len(agent.memory) > batch_size:
                 agent.replay(batch_size)
